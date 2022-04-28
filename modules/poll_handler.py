@@ -27,5 +27,5 @@ async def send_message_():
         # # if calculations got any useful result send a message
         # for i in rule_list:
         #     await send_message_to_user_by_id(i.user_id, 'message')
-        logging.info('pepe_pog')
+        logging.info('Task runs every minute')
         await asyncio.sleep(60)

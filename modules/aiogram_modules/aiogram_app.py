@@ -2,9 +2,11 @@
 import logging
 import asyncio
 from aiogram import Bot, Dispatcher, executor, types
+from telegram import MAX_MESSAGE_LENGTH
 
-
-# import callback_handler
+from modules import binance_api_handler as bah
+from modules.utils.text_formatters import get_ticker_text
+from modules.utils.util_functions import chunks
 
 #load .env variables
 import os
@@ -12,6 +14,7 @@ from dotenv import load_dotenv
 import requests
 load_dotenv()
 API_TOKEN = os.getenv('TOKEN')
+MAX_MESSAGE_LENGTH = 4096
 # API_TOKEN = 'BOT TOKEN HERE'
 
 # Configure logging
@@ -47,10 +50,34 @@ async def docs(message: types.Message):
     Current host location: {host_ip}
     
     Link to docs page:
-    http://{host_ip}:8001/docs
+    http://{host_ip}:8000/docs
     '''
 
     await message.answer(text)
+    
+@dp.message_handler(commands=['get_ticker'])
+async def get_ticker(message: types.Message):
+    if arguments := message.get_args():
+        pair = arguments.split(' ')[0]
+        global bnc_client
+        df = await bah.get_pair_ticker(
+            pair=pair,
+        )
+        text = get_ticker_text(df)
+        await message.answer(text)
+    else:
+        await message.answer('Enter a valid pair. Example: /get_ticker BTCUSDT')
+
+@dp.message_handler(commands=['get_all_symbols'])
+async def get_all_symbols(message: types.Message):
+    text = await bah.get_all_pairs()
+    if len(str(text)) >= MAX_MESSAGE_LENGTH:
+        msg_chunk = chunks(text, int((MAX_MESSAGE_LENGTH-10)/12))
+        for num, i in enumerate(msg_chunk):
+            await message.answer(f'Page {num}\n{i}')
+    else:
+        await message.answer(text)
+
 
 if __name__ == '__main__':
 

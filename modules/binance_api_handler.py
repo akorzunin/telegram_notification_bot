@@ -1,23 +1,62 @@
+from typing import Optional, Union
 from pandas import DataFrame
 import pandas as pd
 import asyncio
 from binance.client import Client, AsyncClient
 import os
-from dotenv import load_dotenv
-load_dotenv()
+# from dotenv import load_dotenv
+# load_dotenv()
 TOKEN = os.getenv('TOKEN')
 BINANCE_API_KEY = os.getenv('BINANCE_API_KEY')
 BINANCE_SECRET_KEY = os.getenv('BINANCE_SECRET_KEY')
 
-async def get_pair_ticker(client: AsyncClient, pair: str) -> DataFrame:
-    data = await client.get_ticker(
-        symbol=pair,
-    )
+ticker_unwanted = [
+    'firstId', 
+    'lastId', 
+    'count', 
+    'lastQty', 
+    'bidQty', 
+    'askQty',
+    'bidPrice',
+    'askPrice',
+    'openTime',
+    'closeTime',
+    'prevClosePrice',
+    
+]
+
+async def get_all_pairs(client: Optional[AsyncClient] = None) -> tuple:
+    if client:
+        data = await client.get_ticker()
+    else:
+        client = get_client()
+        data = client.get_ticker()
+    df = pd.DataFrame(data, index=range(len(data)))
+    return tuple(df['symbol'].to_numpy())
+
+async def get_pair_ticker(pair: str, client: Optional[AsyncClient] = None, ) -> DataFrame:
+    if client:
+        data = await client.get_ticker(
+            symbol=pair,
+        )
+    else: 
+        client = get_client()
+        data = client.get_ticker(
+            symbol=pair,
+        )
     df = pd.DataFrame(data, index=[0])
-    unwanted = ['firstId', 'lastId', 'count', 'lastQty', 'bidQty', 'askQty']
-    item_list = [e for e in list(df.keys()) if e not in unwanted]
+    # remove unwanted fields
+    item_list = [e for e in list(df.keys()) if e not in ticker_unwanted]
     df = df[item_list]
     return df
+
+async def get_all_pair_ticker(client: Optional[AsyncClient] = None, ) -> DataFrame:
+    if client:
+        data = await client.get_ticker()
+    else: 
+        client = get_client()
+        data = client.get_ticker()
+    return pd.DataFrame(data, index=range(len(data)))
 
 def get_client():
     return Client(BINANCE_API_KEY, BINANCE_SECRET_KEY)
