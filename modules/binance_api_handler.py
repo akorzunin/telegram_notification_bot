@@ -35,6 +35,7 @@ async def get_all_pairs(client: Optional[AsyncClient] = None) -> tuple:
     return tuple(df['symbol'].to_numpy())
 
 async def get_pair_ticker(pair: str, client: Optional[AsyncClient] = None, ) -> DataFrame:
+    pair = pair.upper()
     if client:
         data = await client.get_ticker(
             symbol=pair,

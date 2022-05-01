@@ -1,4 +1,5 @@
 
+from sqlite3 import IntegrityError
 from sqlalchemy.orm import Session
 
 from modules.api_modules.db_api import models, schemas
@@ -13,13 +14,47 @@ def create_rule(db: Session, item: schemas.RuleCreate):
     db.refresh(db_item)
     return db_item
 
+# read all rules
+def read_all_rules(db: Session, skip: int = 0, limit: int = 100):
+    return db.query(models.Rules).offset(skip).limit(limit).all()
+
+# delete rule by id
+def delete_rule_by_id(db: Session, rule_id: int) -> bool:
+    db_item = db.query(models.Rules).filter_by(id=rule_id).delete()
+    db.commit()
+    return db_item
+
 # create user
 def create_user(db: Session, item: schemas.UserCreate):
     db_item = models.Users(**item.dict())
-    db.add(db_item)
-    db.commit()
-    db.refresh(db_item)
+    try:
+        db.add(db_item)
+        db.commit()
+        db.refresh(db_item)
+    except IntegrityError: # TODO handle error
+        return None
     return db_item
+
+# read all users
+def read_all_users(db: Session, skip: int = 0, limit: int = 100):
+    return db.query(models.Users).offset(skip).limit(limit).all()
+
+# # read user by id
+# def read_all_users(db: Session, ):
+#     return db.query(models.Users).offset(skip).limit(limit).all()
+
+# # read user by username
+
+# read_user_rules
+def read_user_rules(db: Session, user_id: int):
+    return db.query(models.Users).filter_by(id=user_id).first()
+
+# delete user by id
+def delete_user_by_id(db: Session, user_id: int) -> bool:
+    db_item = db.query(models.Users).filter_by(id=user_id).delete()
+    db.commit()
+    return db_item
+
 
 
 ### OLD CRUD
