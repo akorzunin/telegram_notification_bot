@@ -1,12 +1,16 @@
 version: '3.4'
 
 services:
-  poetrytestproject1:
-    image: poetrytestproject1
+  telegram_notification_bot:
+    image: telegram_notification_bot
     build:
       context: .
       dockerfile: ./Dockerfile
     ports:
-      - 7999:7999
+      - 8002:8002
     env_file:
-      - .env
+      - docker.env
+    volumes:
+      - ./data_base/sql_app.db:/app/data_base/sql_app.db
+volumes:
+  db:
