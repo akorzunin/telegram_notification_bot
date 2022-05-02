@@ -5,17 +5,16 @@ description = ""
 authors = ["WildElaeagnus <54314123+akorzunin@users.noreply.github.com>"]
 
 [tool.poetry.dependencies]
-python = "^3.9"
-python-telegram-bot = "^13.11"
+# python = "^3.9"
+python = ">=3.9,<3.10"
+pandas = "^1.4.2"
 python-dotenv = "^0.20.0"
-loguru = "^0.6.0"
 asyncio = "^3.4.3"
 fastapi = "^0.75.2"
 aiogram = "^2.20"
 uvicorn = "^0.17.6"
 nest-asyncio = "^1.5.5"
 python-binance = "^1.0.16"
-pandas = "^1.4.2"
 SQLAlchemy = "^1.4.35"
 
 [tool.poetry.dev-dependencies]

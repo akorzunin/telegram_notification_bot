@@ -11,6 +11,6 @@ services:
     env_file:
       - docker.env
     volumes:
-      - ./data_base/sql_app.db:/app/data_base/sql_app.db
+      - ./database/sql_app.db:/database/sql_app.db
 volumes:
   db:

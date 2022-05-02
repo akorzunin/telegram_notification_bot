@@ -71,7 +71,6 @@ async def mailing_task():
 # TODO rename as perpetual_coroutine
 async def send_message_():
     while 1:
-        logging.info('Task runs every minute')
         # run logic for mailing other usres
         await mailing_task()
         await asyncio.sleep(60)
