@@ -23,7 +23,6 @@ app.include_router(
 # init client
 @app.on_event("startup")
 async def startup():
-    # TODO can i make it w/o global???
     global bnc_client 
     bnc_client = await bah.get_async_client()
 

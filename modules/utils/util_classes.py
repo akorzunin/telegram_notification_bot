@@ -1,6 +1,6 @@
 import enum
 
-class TreshholdType(enum.Enum):
+class TresholdType(enum.Enum):
     higher = 'higher'
     lower= 'lower'
 

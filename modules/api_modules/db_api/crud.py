@@ -6,8 +6,8 @@ from modules.api_modules.db_api import models, schemas
 
 # create rule
 def create_rule(db: Session, item: schemas.RuleCreate):
-    # get values from TreshholdType class
-    item.TreshholdType = item.TreshholdType.value
+    # get values from TresholdType class
+    item.TresholdType = item.TresholdType.value
     db_item = models.Rules(**item.dict())
     db.add(db_item)
     db.commit()
@@ -27,12 +27,9 @@ def delete_rule_by_id(db: Session, rule_id: int) -> bool:
 # create user
 def create_user(db: Session, item: schemas.UserCreate):
     db_item = models.Users(**item.dict())
-    try:
-        db.add(db_item)
-        db.commit()
-        db.refresh(db_item)
-    except IntegrityError: # TODO handle error
-        return None
+    db.add(db_item)
+    db.commit()
+    db.refresh(db_item)
     return db_item
 
 # read all users

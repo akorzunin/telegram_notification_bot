@@ -28,7 +28,7 @@ def main():
     loop.create_task(server.serve())
 
     # tasks
-    loop.create_task(poll_handler.send_message_())
+    loop.create_task(poll_handler.perpetual_coroutine())
 
     # setup debug console to work w/ awaitables
     nest_asyncio.apply(loop) 

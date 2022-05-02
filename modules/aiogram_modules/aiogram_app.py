@@ -2,12 +2,11 @@
 import logging
 import asyncio
 from aiogram import Bot, Dispatcher, executor, types
-from telegram import MAX_MESSAGE_LENGTH
 
 from modules import binance_api_handler as bah
 from modules.utils.text_formatters import get_rules_text, get_ticker_text
 from modules.utils.util_functions import chunks
-from modules.utils.util_classes import DBContextManager as DBConnect, TreshholdType
+from modules.utils.util_classes import DBContextManager as DBConnect, TresholdType
 from modules.api_modules.db_api import crud, models, schemas
 
 #load .env variables
@@ -31,7 +30,19 @@ dp = Dispatcher(bot)
 @dp.message_handler(commands=['help'])
 async def send_welcome(message: types.Message):
     """This handler will be called when user sends `/start` or `/help` command"""
-    await message.reply("Hi!\nI'm EchoBot!\nPowered by aiogram.")
+    await message.answer('''
+    Bot commands:
+
+    start - initiate bot functions for user
+    help - display availble commands
+    get_info - get information about user
+    docs - get link to docs api
+    get_ticker - get information about trade pair [args: pair]
+    new_rule - create rule that send notification if it's condition is true [args: pair, tresholdtype, value]
+    get_all_symbols - get all info availble abou all pairs
+    list_rules - get list of currently active rules for curren user
+    del_rule - delete rule from user [args: rule_id]
+    ''')
 
 @dp.message_handler(commands=['get_info'])
 async def send_welcome(message: types.Message):
@@ -77,20 +88,20 @@ async def new_rule(message: types.Message):
         try:
             pair, treshold_type, value = arguments.split(' ')
         except ValueError:
-            arguments = 0 # TODO use pydantic for validation
+            arguments = 0
         if arguments:    
             with DBConnect() as db:
                 # crud.read_user_by_chat_id(db, chat_id)
-                user_id = db.query(models.Users).filter_by(chat_id=message.chat.id).first()
+                user_id = db.query(models.Users).filter_by(chat_id=message.chat.id).first().id
                 item = schemas.RuleCreate(
-                    owner_id=user_id.id,#TODO
+                    owner_id=user_id,
                     pair=pair,
                     value=value,
-                    TreshholdType=TreshholdType(treshold_type),
+                    TresholdType=TresholdType(treshold_type),
                 )
                 # create rule function
                 a = crud.create_rule(db=db, item=item, )
-                # TODO print rule info
+                logging.info(f'Rule created {a}')
                 text = f'Rule created'
                 await message.answer(text)
     if not arguments:

@@ -24,7 +24,7 @@ def parse_mailing_text(rule: models.Rules, df: DataFrame) -> str:
     Rule has been trggered
 
     Rule id: {rule.id}
-    TreshholdType: {rule.TreshholdType}
+    TresholdType: {rule.TresholdType}
     Trigger value: {rule.value}
     Last price on {rule.pair} stock: {df.lastPrice.values[0]}
         
@@ -34,8 +34,6 @@ def parse_mailing_text(rule: models.Rules, df: DataFrame) -> str:
 async def mailing_task():
     # get info about all pairs
     df = await bah.get_all_pair_ticker()
-    # pair = 'ETHUSDT'
-    # df_to_str = df.loc[df['symbol'] == pair]
     
     # get all rules from DB
     with DBConnect() as db:
@@ -44,7 +42,7 @@ async def mailing_task():
             for rule in user.rules:
                 # check if rule is true or false
                 if (rl.check_rule(
-                    treshold_type=rule.TreshholdType,
+                    treshold_type=rule.TresholdType,
                     trigger_value=rule.value,
                     #get current value from df w/ all pairs data
                     current_value=float(
@@ -64,12 +62,7 @@ async def mailing_task():
                     if crud.delete_rule_by_id(db, rule.id):
                         logging.info(f'Rule {rule.id} triggered and deleted')
                 
-
-    
-
-
-# TODO rename as perpetual_coroutine
-async def send_message_():
+async def perpetual_coroutine():
     while 1:
         # run logic for mailing other usres
         await mailing_task()

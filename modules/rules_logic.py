@@ -1,6 +1,6 @@
 
 # import __init__
-from modules.utils.util_classes import TreshholdType
+from modules.utils.util_classes import TresholdType
 
 
 def check_rule(
@@ -14,11 +14,11 @@ def check_rule(
     elif(treshold_type == 'lower'):
         # alert if current value is lower than trigger value
         return True if current_value <= trigger_value else False
-    else: raise Exception("TreshholdType is not correct")
+    else: raise Exception("TresholdType is not correct")
     breakpoint()
 
 if __name__ == '__main__':
     import __init__
-    from modules.utils.util_classes import TreshholdType
-    tr = TreshholdType('lower')
+    from modules.utils.util_classes import TresholdType
+    tr = TresholdType('lower')
     print(check_rule(tr, 20, 19)) # True

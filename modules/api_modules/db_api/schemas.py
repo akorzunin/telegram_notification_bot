@@ -1,7 +1,7 @@
 from datetime import datetime, timedelta
 from dateutil.relativedelta import relativedelta
 from typing import Optional, Union
-from modules.utils.util_classes import TreshholdType
+from modules.utils.util_classes import TresholdType
 from sqlalchemy.orm.attributes import InstrumentedAttribute
 from sqlalchemy.sql.elements import BinaryExpression
 from pydantic import BaseModel
@@ -11,7 +11,7 @@ from pydantic import BaseModel
 class RuleCreate(BaseModel):
     pair: str
     value: float
-    TreshholdType: TreshholdType
+    TresholdType: TresholdType
     owner_id: int
 
     class Config:
@@ -22,7 +22,7 @@ class RuleRead(BaseModel):
     id: int
     pair: str 
     value: float 
-    TreshholdType: TreshholdType 
+    TresholdType: TresholdType 
     owner_id: int 
     class Config:
         arbitrary_types_allowed = True
@@ -32,7 +32,7 @@ class RuleRead(BaseModel):
 class RuleUpdate(BaseModel):
     pair: Optional[Union[str, InstrumentedAttribute]]
     value: Optional[Union[float, InstrumentedAttribute]]
-    TreshholdType: Optional[Union[TreshholdType, InstrumentedAttribute]]
+    TresholdType: Optional[Union[TresholdType, InstrumentedAttribute]]
     owner_id: Optional[Union[int, InstrumentedAttribute]]
     class Config:
         arbitrary_types_allowed = True
@@ -42,7 +42,7 @@ class RuleUpdate(BaseModel):
 class RuleUpdate(BaseModel):
     pair: Optional[str]
     value: Optional[float]
-    TreshholdType: Optional[TreshholdType]
+    TresholdType: Optional[TresholdType]
     owner_id: Optional[int]
     class Config:
         arbitrary_types_allowed = True

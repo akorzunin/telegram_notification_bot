@@ -9,7 +9,7 @@ class Rules(Base):
     id = Column(Integer, primary_key=True, index=True)
     pair = Column(String, )
     value = Column(Float, )
-    TreshholdType = Column(String,)
+    TresholdType = Column(String,)
     owner_id = Column(Integer, ForeignKey("users.id"))
 
     owner = relationship("Users", back_populates="rules")
