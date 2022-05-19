@@ -1,6 +1,7 @@
 import asyncio
 import logging
 import pickle
+import requests
 import os
 from pandas import DataFrame
 from aiogram import Bot
@@ -65,6 +66,8 @@ async def mailing_task():
 async def perpetual_coroutine():
     while 1:
         # run logic for mailing other usres
-        await mailing_task()
-        await asyncio.sleep(60)
-
+        try:
+            await mailing_task()
+            await asyncio.sleep(60)
+        except requests.exceptions.ConnectionError as e:
+            logging.error(f'ConnectionError {e}')
