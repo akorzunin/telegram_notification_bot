@@ -1,6 +1,7 @@
 import asyncio
 import logging
 import pickle
+from typing import Optional
 import requests
 import os
 from pandas import DataFrame
@@ -12,7 +13,7 @@ from modules.api_modules.db_api import crud
 from modules.utils.text_formatters import get_ticker_text
 from modules.utils.util_classes import DBContextManager as DBConnect
 from modules import rules_logic as rl
-
+from binance.client import AsyncClient
 #load .env variables
 TOKEN = os.getenv('TOKEN')
 operator = Bot(TOKEN)
@@ -32,9 +33,9 @@ def parse_mailing_text(rule: models.Rules, df: DataFrame) -> str:
     Since rule is triggered it's gonna be deleted
     '''
 
-async def mailing_task():
+async def mailing_task(client: Optional[AsyncClient]):
     # get info about all pairs
-    df = await bah.get_all_pair_ticker()
+    df = await bah.get_all_pair_ticker(client)
     
     # get all rules from DB
     with DBConnect() as db:
@@ -64,10 +65,11 @@ async def mailing_task():
                         logging.info(f'Rule {rule.id} triggered and deleted')
                 
 async def perpetual_coroutine():
+    client = await bah.get_async_client()
     while 1:
         # run logic for mailing other usres
         try:
-            await mailing_task()
+            await mailing_task(client)
             await asyncio.sleep(60)
         except requests.exceptions.ConnectionError as e:
             logging.error(f'ConnectionError {e}')
