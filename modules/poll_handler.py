@@ -2,6 +2,8 @@ import asyncio
 import logging
 import pickle
 from typing import Optional
+from unittest import expectedFailure
+import aiohttp
 import requests
 import os
 from pandas import DataFrame
@@ -70,6 +72,9 @@ async def perpetual_coroutine():
         # run logic for mailing other usres
         try:
             await mailing_task(client)
-            await asyncio.sleep(60)
         except requests.exceptions.ConnectionError as e:
             logging.error(f'ConnectionError {e}')
+        except aiohttp.client_exceptions.ClientConnectorError as e:
+            logging.error(f'ClientConnectionError {e}')
+            
+        await asyncio.sleep(60)
