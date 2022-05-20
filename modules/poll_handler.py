@@ -76,5 +76,7 @@ async def perpetual_coroutine():
             logging.error(f'ConnectionError {e}')
         except aiohttp.client_exceptions.ClientConnectorError as e:
             logging.error(f'ClientConnectionError {e}')
-            
+        except asyncio.exceptions.TimeoutError as e:
+            logging.error(f'TimeoutError {e}')
+
         await asyncio.sleep(60)
