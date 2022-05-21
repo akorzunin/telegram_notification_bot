@@ -69,14 +69,14 @@ async def mailing_task(client: Optional[AsyncClient]):
 async def perpetual_coroutine():
     client = await bah.get_async_client()
     while 1:
-        # run logic for mailing other usres
         try:
+            # run logic for mailing other usres
             await mailing_task(client)
         except requests.exceptions.ConnectionError as e:
-            logging.error(f'ConnectionError {e}')
+            logging.warning(f'ConnectionError {e}')
         except aiohttp.client_exceptions.ClientConnectorError as e:
-            logging.error(f'ClientConnectionError {e}')
+            logging.warning(f'ClientConnectionError {e}')
         except asyncio.exceptions.TimeoutError as e:
-            logging.error(f'TimeoutError {e}')
+            logging.warning(f'TimeoutError {e}')
 
         await asyncio.sleep(60)
