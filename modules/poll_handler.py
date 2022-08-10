@@ -51,7 +51,7 @@ async def mailing_task(client: Optional[AsyncClient]):
                     trigger_value=rule.value,
                     # get current value from df w/ all pairs data
                     current_value=float(
-                        df.loc[df["symbol"] == rule.pair].lastPrice.values[0]
+                        df.loc[df["symbol"] == rule.pair.upper()].lastPrice.values[0]
                     ),
                 ):
                     # send message to user.chat_id
@@ -72,5 +72,6 @@ async def mailing_task(client: Optional[AsyncClient]):
 async def perpetual_coroutine():
     client = await bah.get_async_client()
     while 1:
-        asyncio.gather(mailing_task(client))
-        await asyncio.sleep(60)
+        # asyncio.gather(mailing_task(client))
+        await mailing_task(client)
+        await asyncio.sleep(2)
