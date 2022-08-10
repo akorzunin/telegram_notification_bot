@@ -25,13 +25,15 @@ async def send_message_to_user_by_id(user_id, message):
 
 
 def parse_mailing_text(rule: models.Rules, df: DataFrame) -> str:
+    if not df.lastPrice.values:
+        return "Failed to read data from DataFrame"
     return f"""
     Rule has been trggered
 
     Rule id: {rule.id}
     TresholdType: {rule.TresholdType}
     Trigger value: {rule.value}
-    Last price on {rule.pair} stock: {df.lastPrice.values[0]}
+    Last price on {rule.pair.upper()} stock: {df.lastPrice.values[0]}
         
     Since rule is triggered it's gonna be deleted
     """
@@ -58,7 +60,7 @@ async def mailing_task(client: Optional[AsyncClient]):
                     # send message to user.chat_id
                     text = parse_mailing_text(
                         rule=rule,
-                        df=df.loc[df["symbol"] == rule.pair],
+                        df=df.loc[df["symbol"] == rule.pair.upper()],
                     )
                     await send_message_to_user_by_id(
                         user_id=user.chat_id,

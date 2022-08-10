@@ -36,7 +36,7 @@ def get_rules_text(rules: list) -> str:
     text = 'Rules:\n'
     rule_text = lambda rule: f'''
     Rule id: {rule.id} 
-    Pair: {rule.pair}
+    Pair: {rule.pair.upper()}
     Treshold type: {rule.TresholdType.value}
     Value: {rule.value} 
     '''
