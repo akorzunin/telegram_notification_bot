@@ -9,8 +9,6 @@ services:
     ports:
       - 8002:8002
     env_file:
-      - docker.env
+      - .env
     volumes:
       - ./database/sql_app.db:/database/sql_app.db
-volumes:
-  db:

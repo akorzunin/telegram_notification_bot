@@ -2,6 +2,7 @@
 import logging
 import asyncio
 from aiogram import Bot, Dispatcher, executor, types
+from aiogram.utils.exceptions import TelegramAPIError
 
 from modules import binance_api_handler as bah
 from modules.utils.text_formatters import get_rules_text, get_ticker_text
@@ -26,6 +27,11 @@ logging.basicConfig(level=logging.INFO)
 bot = Bot(token=API_TOKEN)
 dp = Dispatcher(bot)
 
+@dp.errors_handler(exception=TelegramAPIError)  # handle the cases when this exception raises 
+async def message_not_modified_handler(update, error): 
+    logging.error(f'Get error from telegram API: {error}')
+    # errors_handler must return True if error was handled correctly 
+    return True 
 
 @dp.message_handler(commands=['help'])
 async def send_welcome(message: types.Message):
@@ -101,8 +107,8 @@ async def new_rule(message: types.Message):
                 )
                 # create rule function
                 a = crud.create_rule(db=db, item=item, )
-                logging.info(f'Rule created {a}')
-                text = f'Rule created'
+                logging.info(f'Rule created {message.text}')
+                text = 'Rule created'
                 await message.answer(text)
     if not arguments:
         await message.answer(

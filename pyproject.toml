@@ -21,6 +21,7 @@ SQLAlchemy = "^1.4.35"
 mypy = "^0.942"
 isort = "^5.10.1"
 ipykernel = "^6.13.0"
+black = {version = "^22.6.0", allow-prereleases = true}
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]

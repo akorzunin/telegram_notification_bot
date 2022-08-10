@@ -20,7 +20,27 @@
             "command": "& poetry shell",
         },
 
-
+        {
+            "type": "docker-build",
+            "label": "docker-build",
+            "platform": "python",
+            "dockerBuild": {
+                "tag": "telegramnotificationbot:latest",
+                "dockerfile": "${workspaceFolder}\\Dockerfile",
+                "context": "${workspaceFolder}",
+                "pull": true
+            }
+        },
+        {
+            "type": "docker-run",
+            "label": "docker-run: debug",
+            "dependsOn": [
+                "docker-build"
+            ],
+            "python": {
+                "file": "./main.py"
+            }
+        },
 
     ]
 }
