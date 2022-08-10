@@ -16,6 +16,7 @@ from binance.client import AsyncClient
 
 # load .env variables
 TOKEN = os.getenv("TOKEN")
+DEBUG = bool(os.getenv("DEBUG", None))
 operator = Bot(TOKEN)
 
 
@@ -72,6 +73,9 @@ async def mailing_task(client: Optional[AsyncClient]):
 async def perpetual_coroutine():
     client = await bah.get_async_client()
     while 1:
-        # asyncio.gather(mailing_task(client))
-        await mailing_task(client)
-        await asyncio.sleep(2)
+        if not DEBUG:
+            asyncio.gather(mailing_task(client))
+            await asyncio.sleep(60)
+        else:
+            await mailing_task(client)
+            await asyncio.sleep(2)
